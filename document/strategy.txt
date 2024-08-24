@@ -1,0 +1,9 @@
+# How to extract fetatures from SMILES?
+
+## RDkit
+[1] info: Python, C++ based Library
+
+
+
+## Alphapose
+[1] info: 

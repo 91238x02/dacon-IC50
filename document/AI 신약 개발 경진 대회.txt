@@ -1,0 +1,74 @@
+1. Data
+- Input data
+Molecule ChEMBL ID: 화합물의 ChEMBL 데이터베이스 내 고유 식별자
+ (화합물의 고유 식별자로, 각 화합물을 구분하는 데 사용)
+Standard Type: 측정된 바이오학적 활동의 유형, 여기서는 'IC50'입니다. IC50은 특정 농도에서 생물학적 반응을 50% 억제하는 데 필요한 물질의 농도를 나타냄
+ (측정된 바이오학적 활동의 유형을 나타내며, 모델이 어떤 유형의 반응을 예측하고 있는지 알려줌)
+Standard Relation: 표준 값과 비교 관계를 나타내는 기호입니다 (예: '='는 정확한 값임을 의미)
+ (측정된 값의 관계를 나타내는 기호로, 데이터의 정확성을 평가하는 데 도움)
+Standard Value: 표준 값으로, IC50을 나타내며 단위는 'nM' (나노몰)
+ (화합물의 바이오학적 활동을 수치화한 값)
+Standard Units: 측정 단위, 여기서는 'nM'.
+  (측정 단위를 나타내며, 데이터의 해석에 필요)
+Assay ChEMBL ID: 화합물의 활동이 테스트된 실험의 ChEMBL ID
+ (실험이 수행된 ID로, 데이터의 출처를 추적하는 데 사용됨)
+Target ChEMBL ID, Target Name, Target Organism, Target Type: 각각 대상 분자의 ChEMBL ID, 이름, 종, 그리고 유형 (예: SINGLE PROTEIN).
+ (실험 대상의 정보로, 어떤 생물학적 대상에 대한 데이터인지 구분하는 데 사용됨)
+Document ChEMBL ID: 데이터가 수록된 문서의 ID.
+ (데이터가 기록된 문서의 ID로, 데이터 출처의 추가적인 정보를 제공함)
+Smiles: 화합물의 구조를 나타내는 SMILES (Simplified Molecular Input Line Entry System) 문자열.
+ (화합물의 구조를 나타내는 문자열로, 화합물의 화학적 구조 정보를 제공)
+
+- Target data : 모델이 예측을 통해 추정해야 할 주된 바이오마커로, 화합물의 효능을 평가하는 데 중요
+IC50_nM: IC50 값이 'nM' 단위로 직접 제공됨
+pIC50: IC50의 음의 로그 변환 값.
+pChEMBL Value: -log10 변환된 IC50 값으로, 일반적으로 화학적 데이터에서 사용됨
+
+------------------------------------------------------------------------------------------------------
+2. 예시 모델(Linear regression)
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import mean_squared_error
+
+# Vectorize SMILES strings: Converts SMILES chemical notation into a numerical format that can be used by machine learning models.
+# SMILES(원자 및 결합 정보를 일련의 ASCII 문자로 나타내는 화학 노테이션 시스템) 문자열을 수치적으로 처리 가능한 벡터 형태로 변환하는 과정
+vectorizer = CountVectorizer()
+X = vectorizer.fit_transform(data['Smiles'])
+
+# Target variable: The variable we are trying to predict, in this case, the pIC50 value, which indicates the potency of a compound.
+y = data['pIC50']
+
+# Split data into training and testing sets: Allocates 80% of the data for training and 20% for testing to evaluate the model.
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train a linear regression model: Creates a model based on linear regression and fits it with the training data.
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict on test data: Uses the trained model to predict pIC50 values based on the test dataset.
+y_pred = model.predict(X_test)
+
+# Calculate mean squared error: Computes the mean squared error between the predicted and actual pIC50 values to quantify model performance.
+mse = mean_squared_error(y_test, y_pred)
+mse
+
+#Vectorize SMILES strings 포함된 모델
+1. DeepChem : SMILES 문자열을 벡터화하여 화합물의 분자적 특성을 예측
+2. RDKit : SMILES 문자열을 분자 구조로 변환하고, 이 구조를 다양한 벡터 형태로 표현할 수 있는 기능을 제공.
+RDKit는 또한 분자 지문(molecular fingerprints)을 생성하여 분자 간의 유사성을 비교하거나 머신러닝 모델의 입력으로 사용할 수 있음
+3. Graph Convolutional networks(GCN) : SMILES 문자열에서 추출한 분자 구조 정보를 사용하여 분자의 특성을 예측
+
+---------------------------------------------------------------------------------------------------------
+3. Modeling
+DeepChem: DeepChem은 생명과학 연구를 위한 오픈소스 화학 정보학 플랫폼입니다. 
+이는 TensorFlow를 기반으로 하며, 다양한 화학 및 생물학적 데이터셋에 대한 머신러닝 모델의 구현과 평가를 지원합니다.
+
+RDKit: RDKit은 화학 정보학을 위한 자유롭게 사용할 수 있는 오픈소스 C++ 및 Python 라이브러리입니다. 
+이는 분자의 2D 및 3D 구조 처리, 분자 지문 생성, 화학 반응의 시뮬레이션, 데이터 분석 등과 같은 기능을 제공합니다.
+
+PyTorch Geometric (GCN 사용): PyTorch Geometric은 PyTorch를 기반으로 한 그래프 신경망 라이브러리로, 
+GCN과 같은 그래프 기반 신경망 아키텍처를 쉽게 구현할 수 있게 해줍니다. 
+이 라이브러리는 그래프 데이터의 효율적인 처리와 신경망 훈련을 위한 다양한 도구와 알고리즘을 제공합니다.
+

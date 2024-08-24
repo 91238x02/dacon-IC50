@@ -1,0 +1,4 @@
+.venv/
+local-installation-GPU/
+data/GPU_test/
+env_test.ipynb
