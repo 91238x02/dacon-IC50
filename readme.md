@@ -5,8 +5,10 @@ IRAK4 IC50 활성 예측 모델 개발
 ## URL
 https://dacon.io/competitions/official/236336/overview/description
 
-  
-  
+## Notice
+"_" 가 붙은 스크립트들은 데이터 viewing, 간단한 작업 위주의 내용입니다.   
+대부분의 기능들은 .py 로 구현 예정입니다.   
+현 시점에서는 rdkit 으로 SMILES 로부터 데이터 추출 완료 상태이며, 상세 내용은 Strategy 이하 내용 참조 바랍니다.  
 
 # Strategy
 After step 1, iterate step 2 and 3.
