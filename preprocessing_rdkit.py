@@ -7,6 +7,17 @@ import os
 def get_morgan_fingerprints(mol, radius=2, nBits=1024):
     """
     extract "Morgan Fingerprints" using the new MorganGenerator
+    
+    Parameters:
+    [1] radius
+    원자에서부터 시작하여 그래프에서 확장되는 원의 크기를 의미
+    radius=2는 각 원자에서 최대 두 개의 결합까지 탐색하여 주위 원자들의 환경을 포함하는 서브그래프를 고려한다는 의미
+
+    [2] nBits
+    nBits는 생성된 Morgan fingerprints의 비트 벡터(bit vector)의 길이를 결정
+    nBits=1024는 1024비트 길이의 벡터를 생성한다는 의미
+
+    ※ radius=2, nBits=1024 는 일반적으로 고려되는 세팅 (보통 default setting)
     """
     morgan_generator = AllChem.GetMorganGenerator(radius=radius, fpSize=nBits)
     return morgan_generator.GetFingerprint(mol)
@@ -22,6 +33,7 @@ def get_molecular_descriptors(mol, is_3d=False):
     Extract molecule descriptors based on the 2D or 3D configuration.
     """
     # 2D descriptors
+    # reference -> https://www.rdkit.org/docs/source/rdkit.Chem.Descriptors.html 
     descriptors = {
         'MaxAbsEStateIndex': Descriptors.MaxAbsEStateIndex(mol),
         'MaxEStateIndex': Descriptors.MaxEStateIndex(mol),
@@ -249,6 +261,7 @@ def get_molecular_descriptors(mol, is_3d=False):
                 return descriptors  # Return empty descriptors if 3D generation fails
         
         # 3D descriptors
+        # reference -> https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html
         try:
             descriptors.update({
                 '3D_CalcAUTOCORR3D': Descriptors3D.CalcAUTOCORR3D(mol),

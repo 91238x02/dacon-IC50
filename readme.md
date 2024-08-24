@@ -19,7 +19,8 @@ Candidiates
 ### [1] RDkit    
 - Main page -> https://www.rdkit.org/
 - Github -> https://github.com/rdkit/rdkit
-- Document -> https://www.rdkit.org/docs/GettingStartedInPython.html  
+- Document (overall index) -> https://www.rdkit.org/docs/index.html#
+- Document (python man) -> https://www.rdkit.org/docs/GettingStartedInPython.html  
 
 #### 1. Morgan Fingerprints (Circular Fingerprints)   
 - 설명:  
